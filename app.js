@@ -1,6 +1,6 @@
 var MongoClient = require('mongodb').MongoClient;
 var fs = require('fs');
-var readline = require('readline');
+//var readline = require('readline');
 
 MongoClient.connect("mongodb://localhost:27017/", function(err, database)
 {
@@ -10,15 +10,21 @@ MongoClient.connect("mongodb://localhost:27017/", function(err, database)
   }
 
   const MyDB = database.db('test');
-  var ColeccionProductos = MyDB.collection('Productos');
+  //Era aqui la cosa ya lo cambie pero habria que investigar un poco
+  var ColeccionFacturas = MyDB.collection('Productos');
   var FileProductos = fs.readFileSync('Productos.csv', 'utf8');
   var FileEmpleados = fs.readFileSync('Empleados.txt', 'utf8');
 
-  var aux = dameEmpleado(FileEmpleados);
-  console.log(aux);
+  // var aux = dameEmpleado(FileEmpleados);
+  // console.log(aux);
+  //
+  // var aux2 = dameProducto(FileProductos);
+  // console.log(aux2);
+  //
+  // var div = dividirProducto(aux2);
+  // console.log(div[0]+"___________"+div[1]);
+  // console.log(parseFloat(div[1]));
 
-  var aux2 = dameProducto(FileProductos);
-  console.log(aux2);
 
 //SALTAMOS LA PRIMERA linea
   // FileProductos.toString().split(/\n/).forEach(function(line, index){
@@ -30,7 +36,48 @@ MongoClient.connect("mongodb://localhost:27017/", function(err, database)
   //     })
   //   }
   //});
+     for(var i = 0; i < 4; i++)
+     {
+         console.log(i);
+         var empleado_aux = dameEmpleado(FileEmpleados);
+         var productos_aux =  dameProducto(FileProductos);
+         var div = dividirProducto(productos_aux);
 
+         var SubTotal = 0;
+         var TotalIgic = 0;
+         var TotalFactura = 0;
+         var Detalle = [];
+         for(var P = 1; P <= random(1,5);P++)
+         {
+             var Cantidad = random(1,10);
+             //Hay que parsear a float el string
+             var Precio = Cantidad * parseFloat(div[1]);
+             var Igic = Precio*0.07;
+             var Total = Precio+Igic;
+             SubTotal += Precio;
+             TotalIgic += Igic;
+             TotalFactura += Total;
+             Detalle.push({'Cantidad':Cantidad, 'Producto':div[0],'Importe':div[1],'IGIC':Igic,'Total':Total});
+             //console.log(Detalle);
+         }
+         //Habría que hacer algo aqui con el subtotal y todo eso, pero lo de arriba creo que funciona naisu;
+         var Factura = {
+           'Empleado':empleado_aux,
+           'SubTotal':SubTotal,
+           'Igic':Igic,
+           'Total':TotalFactura,
+           'Detalle':Detalle
+         };
+         console.log(Factura);
+         ColeccionFacturas.insert(Factura, function(err){
+           if(err)
+            console.log('Error al insertar');
+           else
+            console.log('Elemento insertado');
+         });
+
+
+     }
   // for(int i = 0; i < FileProductos.size(); i++)
   // {
   //   if(FileProductos[i] != ';')
@@ -51,6 +98,22 @@ MongoClient.connect("mongodb://localhost:27017/", function(err, database)
   //     ColeccionProductos.insert(Tupla);
   //}
 });
+
+//En el array 0 queda el nombre y el array 1 queda el precio
+
+function dividirProducto(producto,nombre_producto,precio)
+{
+    var array = ["",""]
+    producto.toString().split(/;/).forEach(function(div,index){
+       if(index == 0)
+           array[0]=div;
+
+       else
+           array[1]=div;
+
+    });
+    return array;
+}
 
 function random(min, max)
 {
