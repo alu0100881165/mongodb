@@ -10,7 +10,7 @@ MongoClient.connect("mongodb://localhost:27017/", function(err, database)
   }
 
   const MyDB = database.db('test');
-  var ColeccionProductos = MyDB.collection('Productos');
+  var ColeccionFacturas = MyDB.collection('Productos');
   var FileProductos = fs.readFileSync('Productos.csv', 'utf8');
   var FileEmpleados = fs.readFileSync('Empleados.txt', 'utf8');
 
