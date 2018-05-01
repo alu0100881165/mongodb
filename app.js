@@ -10,6 +10,7 @@ MongoClient.connect("mongodb://localhost:27017/", function(err, database)
   }
 
   const MyDB = database.db('test');
+  //Era aqui la cosa ya lo cambie pero habria que investigar un poco
   var ColeccionFacturas = MyDB.collection('Productos');
   var FileProductos = fs.readFileSync('Productos.csv', 'utf8');
   var FileEmpleados = fs.readFileSync('Empleados.txt', 'utf8');
