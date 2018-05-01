@@ -20,6 +20,8 @@ MongoClient.connect("mongodb://localhost:27017/", function(err, database)
   var aux2 = dameProducto(FileProductos);
   console.log(aux2);
 
+  var div = dividirProducto(aux2);
+  console.log(div[0]+"___________"+div[1]); 
 //SALTAMOS LA PRIMERA linea
   // FileProductos.toString().split(/\n/).forEach(function(line, index){
   //   if(index != 0)
@@ -30,7 +32,17 @@ MongoClient.connect("mongodb://localhost:27017/", function(err, database)
   //     })
   //   }
   //});
-
+     for(var i = 0; i < 1000; i++)
+     {
+         var empleado_aux = dameEmpleado(FileEmpleados);
+         var productos_aux =  dameProducto(FileProductos);
+         var div = dividirProducto(productos_aux);
+         
+         var Factura = {'Empleado':empleado_aux };
+         
+         
+         
+     }
   // for(int i = 0; i < FileProductos.size(); i++)
   // {
   //   if(FileProductos[i] != ';')
@@ -51,6 +63,20 @@ MongoClient.connect("mongodb://localhost:27017/", function(err, database)
   //     ColeccionProductos.insert(Tupla);
   //}
 });
+
+function dividirProducto(producto,nombre_producto,precio)
+{
+    var array = ["",""]
+    producto.toString().split(/;/).forEach(function(div,index){
+       if(index == 0)
+           array[0]=div;
+       
+       else
+           array[1]=div;
+        
+    });
+    return array;
+}
 
 function random(min, max)
 {
